@@ -19,11 +19,11 @@
                     </thead>
                     {% for ioc in order %}
                         <tr>
-                            <td><a href="/reports/{{ ioc }}">{{ ioc }}</a></td>
+                            <td><a href="/reports?observable={{ ioc|urlencode }}">{{ ioc }}</a></td>
                             <td>{{ summary[ioc]['first_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['last_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['count'] }}</td>
-                            <td><a href="/artifacts/{{ ioc }}">Review</a></td>
+                            <td><a href="/artifacts?observable={{ ioc|urlencode }}">Review</a></td>
                         </tr>
                     {% endfor %}
                 </table>
