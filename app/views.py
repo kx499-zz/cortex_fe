@@ -13,7 +13,7 @@ def _get_analyzers(data_type):
     analyzers = {}
     headers = {'Authorization': 'Bearer %s' % CORTEX_API}
     try:
-        r = requests.get('%s/api/analyzer/type/%s' % (CORTEX, data_type), headers=headers)
+        r = requests.get('%s/api/analyzer/type/%s' % (CORTEX, data_type), headers=headers, verify=False)
         analyzer_json = r.json()
         for a in analyzer_json:
             analyzers[a['name']] = a['_id']
@@ -29,7 +29,7 @@ def _run_analyzers(ioc, analyzers, data_type):
     try:
         j_data = {"data":ioc, "dataType": data_type, "tlp":0 }
         for analyzer in analyzers:
-            r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer), headers=headers, json=j_data)
+            r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer), headers=headers, json=j_data, verify=False)
             analyzer_response = r.json()
             if 'errors' not in analyzer_response:
                 success += 1
@@ -46,7 +46,7 @@ def _run_file_analyzers(file_path, analyzers):
         j_data = json.dumps({"dataType": "file", "tlp":0})
         f_data = {'attachment': open(file_path, 'rb'), '_json': (None, j_data, 'application/json')}
         for analyzer in analyzers:
-            r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer), headers=headers, files=f_data)
+            r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer), headers=headers, files=f_data, verify=False)
             analyzer_response = r.json()
             print analyzer_response
             if 'errors' not in analyzer_response:
@@ -64,11 +64,11 @@ def _get_jobs(observable=None):
         if observable:
             q = {"query": { "_field": "data", "_value": observable}}
             q2 = {"query": {'_field': 'attachment.name', '_value': observable}}
-            r = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, json=q)
-            r2 = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, json=q2)
+            r = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, json=q, verify=False)
+            r2 = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, json=q2, verify=False)
             jobs = r.json() + r2.json()
         else:
-            r = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, data = {'range':'all'})
+            r = requests.post('%s/api/job/_search?range=all' % CORTEX, headers=headers, data = {'range':'all'}, verify=False)
             jobs = r.json()
     except Exception:
         print 'hit exception'
@@ -80,7 +80,7 @@ def _get_job_detail(job_id):
     job = {}
     headers = {'Authorization': 'Bearer %s' % CORTEX_API}
     try:
-        r = requests.get('%s/api/job/%s/report' % (CORTEX, job_id), headers=headers)
+        r = requests.get('%s/api/job/%s/report' % (CORTEX, job_id), headers=headers, verify=False)
         job = r.json()
     except Exception:
         print 'hit exception'
