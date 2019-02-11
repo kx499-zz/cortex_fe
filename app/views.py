@@ -1,13 +1,24 @@
-from flask import render_template, flash, jsonify
+from flask import render_template, flash, jsonify, request, abort
 from app import app
 from .forms import IocForm, FileForm
-from config import DATA_TYPES, CORTEX, CORTEX_API
-import requests
+from config import DATA_TYPES, CORTEX, CORTEX_API, VALIDATE
 from werkzeug.utils import secure_filename
-import json
 from datetime import datetime
-import pprint
+from markupsafe import Markup
+import urllib
+import json
+import requests
+import re
 
+
+def _validate_observable(observable):
+    checked_type = None
+    if not observable:
+        return checked_type
+    for data_type, rex in VALIDATE.iteritems():
+        if rex and re.search(rex, observable):
+            checked_type = data_type
+    return checked_type
 
 def _get_analyzers(data_type):
     analyzers = {}
@@ -48,7 +59,6 @@ def _run_file_analyzers(file_path, analyzers):
         for analyzer in analyzers:
             r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer), headers=headers, files=f_data)
             analyzer_response = r.json()
-            print analyzer_response
             if 'errors' not in analyzer_response:
                 success += 1
     except Exception:
@@ -87,6 +97,13 @@ def _get_job_detail(job_id):
         pass
     return job
 
+@app.template_filter('urlencode')
+def urlencode_filter(s):
+    if type(s) == 'Markup':
+        s = s.unescape()
+    s = s.encode('utf8')
+    s = urllib.quote_plus(s)
+    return Markup(s)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -113,17 +130,22 @@ def index():
     return render_template('index.html', title='Observable Reports', summary=summary, order=reversed(order))
 
 
-@app.route('/reports/<observable>', methods=['GET', 'POST'])
-def reports(observable):
+@app.route('/reports', methods=['GET', 'POST'])
+def reports():
+    observable = request.args.get('observable')
+    if not _validate_observable(observable):
+        abort(401)
     jobs = _get_jobs(observable)
-    pprint.pprint(jobs[0])
     for job in jobs:
         job['createdAt'] = datetime.fromtimestamp(job['date'] / 1000)
     return render_template('observable_reports.html', title='Observable Reports', jobs=jobs)
 
 
-@app.route('/artifacts/<observable>', methods=['GET', 'POST'])
-def artifacts(observable):
+@app.route('/artifacts', methods=['GET', 'POST'])
+def artifacts():
+    observable = request.args.get('observable')
+    if not _validate_observable(observable):
+        abort(401)
     jobs = _get_jobs(observable)
     results = []
     for job in jobs:
@@ -136,7 +158,6 @@ def artifacts(observable):
             a['analyzerName'] = job['analyzerName']
             a['date'] = datetime.fromtimestamp(job['date'] / 1000)
         results += job_artifacts
-        print results
 
     return render_template('artifacts.html', title='Artifacts From Analysis: %s' % observable, artifacts=results)
 
@@ -151,8 +172,6 @@ def query(data_type):
         form = IocForm()
     form.data_type = data_type
     analyzers = _get_analyzers(data_type)
-    print analyzers
-    print list([(k, v) for k,v in analyzers.iteritems()])
     form.analyzers.choices = [(v, k) for k,v in analyzers.iteritems()]
 
     if form.validate_on_submit():
