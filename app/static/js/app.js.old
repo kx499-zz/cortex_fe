@@ -1,0 +1,35 @@
+angular.module('app', ['ui.bootstrap'])
+    .controller('Ctrl', ['$scope', '$http', '$uibModal', function($scope, $http, $uibModal) {
+
+        $scope.open = function() {
+            $http.get('/detail/AWgkbnKmrmcqEmUgZ7cR')
+                .success(function(response) {
+                    var content = response.result;
+                    var artifact = {}
+
+                    var options = {
+                        controller: 'ModalCtrl', // the dialog object will be inject
+                                                  // into it
+                        templateUrl: '/static/tmp1_VirusTotal_GetReport_3_0.html', // can be either a static file or
+                                                    // a service that returns some data
+                        resolve: {
+                            content: function() {
+                                return content;
+                            },
+                            artifact: function() {
+                                return content;
+                            }
+                        }
+                    };
+                    $uibModal.open(options);
+                });
+        };
+    }])
+    .controller('ModalCtrl', function($scope, $uibModalInstance, content, artifact) {
+        // Here you can put whatever behavior the dialog might have
+        $scope.content = content;
+        $scope.artifact = artifact;
+        $scope.close = function() {
+            $uibModalInstance.dismiss('cancel');
+        };
+    });

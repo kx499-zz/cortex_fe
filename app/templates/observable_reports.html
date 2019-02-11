@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "macros/form.html" as forms %}
+{% block content %}
+
+
+
+    <div class="row">
+            <div class="col-md-12" ng-app="app" ng-controller="Ctrl">
+                <h1 class="lead">{{ title }}</h1>
+                <table id="event_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>IOC</th>
+                            <th>Results</th>
+                            <th>Analyzer</th>
+                        </tr>
+                    </thead>
+                    {% for job in jobs %}
+                        <tr>
+                            <td>{{ job['createdAt'].strftime('%Y-%m-%d %H:%S') }}</td>
+                            <td>{{ job['data'] or job['attachment']['name'] }}</td>
+                            <td>{{ job['status'] }}</td>
+                            <td><a href ng-click="showReport('{{ job['id'] }}')" uib-tooltip="View report">{{ job['analyzerName'] }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+    </div>
+
+    <script>
+        $(function () {
+          $(".js-report-btn").click(function () {
+            $.ajax({
+              url: '/detail/' + $(this).data('job'),
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#reportModal").modal("show");
+              },
+              success: function (data) {
+                $("#reportModal .modal-body").html(data.html);
+              }
+            });
+          });
+
+        });
+    </script>
+{% endblock %}

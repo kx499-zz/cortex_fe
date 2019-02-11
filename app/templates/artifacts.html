@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "macros/form.html" as forms %}
+{% block content %}
+
+
+
+    <div class="row">
+            <div class="col-md-12" ng-app="app" ng-controller="Ctrl">
+                <h1 class="lead">{{ title }}</h1>
+                <table id="event_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Date</th>
+                            <th>Analyzer</th>
+                            <th>Data Type</th>
+                            <th>Observable</th>
+                        </tr>
+                    </thead>
+                    {% for a in artifacts %}
+                        <tr>
+                            <td><input type="checkbox" name="ck-select" value="" /></td>
+                            <td>{{ a['date'].strftime('%Y-%m-%d %H:%S') }}</td>
+                            <td>{{ a['analyzerName'] }}</td>
+                            <td>{{ a['dataType'] }}</td>
+                            <td>{{ a['data'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+    </div>
+
+    <script>
+        $(function () {
+          $(".js-report-btn").click(function () {
+            $.ajax({
+              url: '/detail/' + $(this).data('job'),
+              type: 'get',
+              dataType: 'json',
+              beforeSend: function () {
+                $("#reportModal").modal("show");
+              },
+              success: function (data) {
+                $("#reportModal .modal-body").html(data.html);
+              }
+            });
+          });
+
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+#virtenv
+bin/
+include/
+lib/
+local/
+pip-selfcheck.json
+
+#app specific stuff
+.idea/
+.DS_Store
+.Python
+*.log
+config.py
+
+
+
+
+celerybeat-schedule
