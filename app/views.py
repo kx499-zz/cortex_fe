@@ -9,6 +9,7 @@ import urllib
 import json
 import requests
 import re
+import pprint
 
 
 def _validate_observable(observable):
@@ -139,6 +140,15 @@ def reports():
     jobs = _get_jobs(observable)
     for job in jobs:
         job['createdAt'] = datetime.fromtimestamp(job['date'] / 1000)
+        details = _get_job_detail(job['id'])
+        pprint.pprint(details)
+        job['text'] = 'n/a'
+        job['level'] = 'n/a'
+        taxes = details.get('report', {}).get('summary', {}).get('taxonomies', [])
+        for t in taxes:
+            job['text'] = t.get('value', 'n/a')
+            job['level'] = t.get('level', 'n/a')
+
     return render_template('observable_reports.html', title='Observable Reports', jobs=jobs)
 
 
