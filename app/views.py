@@ -15,6 +15,7 @@ def _validate_observable(observable):
     checked_type = None
     if not observable:
         return checked_type
+    print observable
     for data_type, rex in VALIDATE.iteritems():
         if rex and re.search(rex, observable):
             checked_type = data_type
