@@ -13,14 +13,18 @@
                             <th>Date</th>
                             <th>IOC</th>
                             <th>Results</th>
+                            <th>Level</th>
+                            <th>Summary</th>
                             <th>Analyzer</th>
                         </tr>
                     </thead>
                     {% for job in jobs %}
-                        <tr>
+                        <tr {{ ('class="danger"'|safe) if job['level'] == 'malicious' else ('class="info"'|safe) }}>
                             <td>{{ job['createdAt'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ job['data'] or job['attachment']['name'] }}</td>
                             <td>{{ job['status'] }}</td>
+                            <td>{{ job['level'] }}</td>
+                            <td>{{ job['text'] }}</td>
                             <td><a href ng-click="showReport('{{ job['id'] }}')" uib-tooltip="View report">{{ job['analyzerName'] }}</a></td>
                         </tr>
                     {% endfor %}
