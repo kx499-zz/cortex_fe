@@ -16,8 +16,5 @@ pip-selfcheck.json
 .Python
 *.log
 config.py
-
-
-
-
-celerybeat-schedule
+log.txt
+share/
