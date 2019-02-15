@@ -22,6 +22,18 @@
     </div>
 </div>
 
+<div class="panel panel-info" ng-if="success">
+    <div class="panel-heading">
+        WhoIs data for <strong>{{artifact.data}}</strong>
+    </div>
+    <div class="panel-body">
+    	<div ng-if="content.abuse_finder.raw">
+    		<pre>{{content.abuse_finder.raw}}</pre>
+    	</div>
+      </dl>
+    </div>
+</div>
+
 <!-- General error -->
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
