@@ -16,7 +16,6 @@ def _validate_observable(observable):
     checked_type = None
     if not observable:
         return checked_type
-    print observable
     for data_type, rex in VALIDATE.iteritems():
         if rex and re.search(rex, observable):
             checked_type = data_type
@@ -141,10 +140,11 @@ def reports():
     for job in jobs:
         job['createdAt'] = datetime.fromtimestamp(job['date'] / 1000)
         details = _get_job_detail(job['id'])
-        pprint.pprint(details)
         job['text'] = 'n/a'
         job['level'] = 'n/a'
-        taxes = details.get('report', {}).get('summary', {}).get('taxonomies', [])
+        report  = details.get('report', {})
+        summary = report.get('summary', {})
+        taxes = summary.get('taxonomies', [])
         for t in taxes:
             job['text'] = t.get('value', 'n/a')
             job['level'] = t.get('level', 'n/a')

@@ -19,7 +19,15 @@
                         </tr>
                     </thead>
                     {% for job in jobs %}
-                        <tr {{ ('class="danger"'|safe) if job['level'] == 'malicious' else ('class="info"'|safe) }}>
+                      {% if job['level'] == 'malicious' %}
+                        <tr class="danger">
+                      {% elif job['level'] == 'suspicious' %}
+                        <tr class="warning">
+                      {% elif job['level'] == 'info' %}
+                        <tr class="info">
+                      {% else %}
+                        <tr>
+                      {% endif %}
                             <td>{{ job['createdAt'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ job['data'] or job['attachment']['name'] }}</td>
                             <td>{{ job['status'] }}</td>
