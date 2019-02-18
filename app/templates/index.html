@@ -23,7 +23,7 @@
                             <td>{{ summary[ioc]['first_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['last_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['count'] }}</td>
-                            <td><a href="/artifacts?observable={{ ioc|urlencode }}">Review</a></td>
+                            <td><a href="/artifacts?observable={{ ioc|urlencode }}">Review</a> | <a href="/artifacts?observable={{ ioc|urlencode }}&download=csv">DL</a></td>
                         </tr>
                     {% endfor %}
                 </table>
