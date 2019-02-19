@@ -6,6 +6,7 @@ virtualenv cortex_fe
 cd cortex_fe
 bin/pip install -r requirements.txt
 
+rename config.py.bu to config.py and add in your cortex information. Also add a secret ky valur different from what i have. 
 running:
 ./run.py
 
