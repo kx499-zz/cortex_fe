@@ -76,6 +76,17 @@
             </div>
         </div>
 
+       	<div class="panel panel-info" ng-if="success">
+    				<div class="panel-heading">
+        				WhoIs data for <strong>{{artifact.data}}</strong>
+    				</div>
+    				<div class="panel-body">
+      					<div ng-if="content.whois">
+        						<pre>{{content.whois}}</pre>
+      					</div>
+						</div>
+    		</div>
+
         <div class="panel panel-info" ng-if="::content.detected_urls" ng-init="detected_urls_limit = 20">
             <div class="panel-heading">
                 <strong>Latest detected URLs</strong>
