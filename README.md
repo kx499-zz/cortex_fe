@@ -1,6 +1,7 @@
 # cortex_fe
 
 To set up:
+
 git clone https://github.com/kx499/cortex_fe.git
 virtualenv cortex_fe
 cd cortex_fe
