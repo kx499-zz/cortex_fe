@@ -3,7 +3,7 @@
 {% block content %}
 
 
-
+    <div id="alert_placeholder" class="container-fluid"></div>
     <div class="row">
             <div class="col-md-12" ng-app="app" ng-controller="Ctrl">
                 <h1 class="lead">{{ title }}</h1>
@@ -23,7 +23,7 @@
                             <td>{{ a['date'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ a['analyzerName'] }}</td>
                             <td>{{ a['dataType'] }}</td>
-                            <td>{{ a['data'] }}</td>
+                            <td><a href="#" class="send-ioc-btn" data-ioc="{{ a['data'] }}" data-dt="{{ a['dataType'] }}">{{ a['data'] }}</a></td>
                         </tr>
                     {% endfor %}
                 </table>
@@ -31,21 +31,25 @@
     </div>
 
     <script>
+        bootstrap_alert = function() {}
+        bootstrap_alert.warning = function(message) {
+            $('#alert_placeholder').html('<div class="alert alert-danger" role="alert">'+message+'</div>')
+        }
         $(function () {
-          $(".js-report-btn").click(function () {
-            $.ajax({
-              url: '/detail/' + $(this).data('job'),
-              type: 'get',
-              dataType: 'json',
-              beforeSend: function () {
-                $("#reportModal").modal("show");
-              },
-              success: function (data) {
-                $("#reportModal .modal-body").html(data.html);
-              }
-            });
+          $(".send-ioc-btn").click(function () {
+            if (confirm('Submit indicator to analyzers?')) {
+                $.ajax({
+                  url: '/query_all',
+                  type: 'post',
+                  contentType: 'application/json;charset=UTF-8',
+                  dataType: 'json',
+                  data: JSON.stringify({'data_type': $(this).data('dt'), 'observable': $(this).data('ioc'), 'pivot': '{{ observable }}'}),
+                  beforeSend: function () {
+                    bootstrap_alert.warning('Successfully submitted analyzers');
+                  }
+                });
+            }
           });
-
         });
     </script>
 {% endblock %}

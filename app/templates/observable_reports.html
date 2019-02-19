@@ -12,6 +12,7 @@
                         <tr>
                             <th>Date</th>
                             <th>IOC</th>
+                            <th>Message</th>
                             <th>Results</th>
                             <th>Level</th>
                             <th>Summary</th>
@@ -30,6 +31,7 @@
                       {% endif %}
                             <td>{{ job['createdAt'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ job['data'] or job['attachment']['name'] }}</td>
+                            <td>{{ job['message'] }}</td>
                             <td>{{ job['status'] }}</td>
                             <td>{{ job['level'] }}</td>
                             <td>{{ job['text'] }}</td>
