@@ -4,18 +4,15 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'you-will-never-guess'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-
 VALIDATE = {'ip': '\d+\.\d+\.\d+\.\d+',
             'domain':'^[a-zA-Z0-9-_\.]+$',
+            'fqdn':'^[a-zA-Z0-9-_\.]+$',
             'url':'^[a-zA-Z0-9-_\.\/\:]+$',
             'hash':'^([a-zA-Z0-9]{32}|[a-zA-Z0-9]{64})$',
             'job_id': '^[a-zA-Z0-9\-\_]+$'
             }
 
-DATA_TYPES = ['ip', 'domain', 'url', 'hash', 'file']
+DATA_TYPES = ['ip', 'domain', 'url', 'hash', 'file', 'fqdn']
 
 CORTEX = 'http://xxxxxx:9001'
 CORTEX_API = 'xxxxx'

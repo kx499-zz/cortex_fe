@@ -39,11 +39,13 @@ def _get_analyzers(data_type):
     return analyzers
 
 
-def _run_analyzers(ioc, analyzers, data_type):
+def _run_analyzers(ioc, analyzers, data_type, message=None):
+    if not message:
+        message = 'Manual submit'
     headers = {'Authorization': 'Bearer %s' % CORTEX_API}
     success = 0
     try:
-        j_data = {"data":ioc, "dataType": data_type, "tlp":0 }
+        j_data = {"data":ioc, "dataType": data_type, "tlp":0, "message": message }
         for analyzer in analyzers:
             r = requests.post('%s/api/analyzer/%s/run?force=1' % (CORTEX, analyzer),
                               headers=headers,
@@ -134,12 +136,14 @@ def index():
         ioc = job.get('data') or job['attachment']['name']
         if ioc in summary:
             summary[ioc]['count'] += 1
+            if job['message'] not in summary[ioc]['messages']:
+                summary[ioc]['messages'].append(job['message'])
             if jdt < summary[ioc]['first_seen']:
                 summary[ioc]['first_seen'] = jdt
             if jdt > summary[ioc]['last_seen']:
                 summary[ioc]['last_seen'] = jdt
         else:
-            summary[ioc] = {'first_seen': jdt, 'last_seen': jdt, 'count': 1}
+            summary[ioc] = {'first_seen': jdt, 'last_seen': jdt, 'count': 1, 'messages': [job['message']]}
 
     order = sorted(summary.keys(), key=lambda x: (summary[x]['last_seen']))
 
@@ -160,7 +164,9 @@ def reports():
         details = _get_job_detail(job['id'])
         job['text'] = 'n/a'
         job['level'] = 'n/a'
-        report  = details.get('report', {})
+
+        # populate text and level
+        report = details.get('report', {})
         summary = report.get('summary', {})
         taxes = summary.get('taxonomies', [])
         for t in taxes:
@@ -184,18 +190,14 @@ def artifacts():
         if len(job_artifacts) < 1:
             continue
 
-        print job_artifacts
         for a in job_artifacts:
-            print a
             a['analyzerName'] = job['analyzerName']
             a['date'] = datetime.fromtimestamp(job['date'] / 1000)
             if a['dataType'] == 'ip':
                 try:
                     if ipaddress.ip_address(unicode(a['data'])).is_global:
                         results.append(a)
-                        print "removed outside of exception"
                 except:
-                    print "exception hit"
                     pass
             else:
                 results.append(a)
@@ -212,17 +214,18 @@ def artifacts():
 
     return render_template('artifacts.html',
                            title='Artifacts From Analysis: %s' % observable,
-                           artifacts=results)
+                           artifacts=results, observable=observable)
 
 
 @app.route('/query/<data_type>', methods=['GET', 'POST'])
 def query(data_type):
     if not (data_type in DATA_TYPES):
-        raise Exception("Bad Values")
+        abort(401)
     if data_type == 'file':
         form = FileForm()
     else:
         form = IocForm()
+
     form.data_type = data_type
     analyzers = _get_analyzers(data_type)
     form.analyzers.choices = [(v, k) for k,v in analyzers.iteritems()]
@@ -236,13 +239,32 @@ def query(data_type):
             results = _run_file_analyzers(file_path, picked_analyzers)
         else:
             ioc = form.value.data
-
-            misp = form.misp.data
-            results = _run_analyzers(ioc, picked_analyzers, data_type)
+            message = form.message.data
+            results = _run_analyzers(ioc, picked_analyzers, data_type, message)
 
         flash('Successfully submitted %s analyzers' % results)
 
     return render_template('query.html', title='Edit/View Referers', form=form)
+
+
+@app.route('/query_all', methods=['GET', 'POST'])
+def query_all():
+    if request.method == "POST":
+        data_type = request.json.get('data_type')
+        observable = request.json.get('observable')
+        orig_observable = request.json.get('pivot', '')
+
+        if not data_type or not observable:
+            abort(401)
+        if not (data_type in DATA_TYPES):
+            abort(401)
+        if not _validate_observable(observable):
+            abort(401)
+        analyzers = list([v for k,v in _get_analyzers(data_type).iteritems()])
+        message = 'Auto-pivot on %s' % orig_observable
+        results = _run_analyzers(observable, analyzers, data_type, message)
+
+    return jsonify({'success': results})
 
 
 @app.route('/detail/<job_id>', methods=['GET', 'POST'])

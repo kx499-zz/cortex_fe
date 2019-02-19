@@ -11,6 +11,7 @@
                     <thead>
                         <tr>
                             <th>IOC</th>
+                            <th>Messages</th>
                             <th>First Seen</th>
                             <th>Last Seen</th>
                             <th>Successful Jobs</th>
@@ -20,6 +21,7 @@
                     {% for ioc in order %}
                         <tr>
                             <td><a href="/reports?observable={{ ioc|urlencode }}">{{ ioc }}</a></td>
+                            <td>{{ summary[ioc]['messages'] | join(';') }}</td>
                             <td>{{ summary[ioc]['first_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['last_seen'].strftime('%Y-%m-%d %H:%S') }}</td>
                             <td>{{ summary[ioc]['count'] }}</td>

@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, SelectMultipleField, FileField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Optional, Length
 from config import VALIDATE
 import re
 
@@ -8,13 +8,14 @@ import re
 class IocForm(Form):
     value = StringField('IOC', validators=[DataRequired()])
     analyzers = SelectMultipleField('Source', validators=[DataRequired()])
-    misp = BooleanField('Misp')
+    message = StringField('Message',
+                          validators = [Optional(), Length(max = 100)],
+                          filters = [lambda x: x or None])
     
     def validate(self):
         rv = Form.validate(self)
         if not rv:
             return False
-        print self.data_type
         rex = VALIDATE.get(self.data_type)
         field = self.value
         if rex and not re.search(rex, field.data):
