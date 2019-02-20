@@ -6,7 +6,7 @@
 		</div>
 		<div class="panel-body">
 
-			<h4>FireEye iSIGHT information for {{artifact.data }}</h4>
+			<h4>FireEye iSIGHT information for {{artifact.data | fang}}</h4>
 
 			<dl class="dl-horizontal">
 				<dt>Level</dt>
@@ -84,7 +84,7 @@
 <!-- Failure case -->
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{artifact.data }}</strong>
+        <strong>{{artifact.data | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

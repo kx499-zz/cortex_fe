@@ -72,3 +72,8 @@ myModal.directive('report', function ($templateRequest, $q, $compile) {
                 }
             };
         });
+myModal.filter('fang', function() {
+  return function(x) {
+    return x;
+  };
+});

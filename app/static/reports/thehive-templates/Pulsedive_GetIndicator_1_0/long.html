@@ -127,13 +127,13 @@
 </div>
 
 <div class="panel panel-warning" ng-if="success && content.error">
-    <div class="panel-heading"><strong>{{artifact.data }}</strong></div>
+    <div class="panel-heading"><strong>{{artifact.data | fang}}</strong></div>
     <div class="panel-body">{{content.error}}</div>
 </div>
 
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{artifact.data }}</strong>
+        <strong>{{artifact.data | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

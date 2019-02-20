@@ -1,6 +1,6 @@
 <div class="panel panel-info" ng-if="success">
     <div class="panel-heading">
-        HIBP Data of <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        HIBP Data of <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
 		<!-- Domain details -->
@@ -45,7 +45,7 @@
 
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

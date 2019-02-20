@@ -1,6 +1,6 @@
 <div class="panel panel-info" ng-if="success">
     <div class="panel-heading">
-        Geolocation of <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        Geolocation of <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
         <div ng-show="content.traits.is_anonymous_proxy" class="alert alert-warning">Is anonymous proxy</div>
@@ -12,7 +12,7 @@
 
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

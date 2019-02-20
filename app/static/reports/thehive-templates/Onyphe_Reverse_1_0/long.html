@@ -1,6 +1,6 @@
 <div class="panel panel-info" ng-if="success">
 	<div class="panel-heading">
-		Onyphe Reverse - <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+		Onyphe Reverse - <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
 	</div>
 	<div class="panel-body">
         <dl class="dl-horizontal">
@@ -56,7 +56,7 @@
 <!-- General error -->
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{artifact.data }}</strong>
+        <strong>{{artifact.data | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

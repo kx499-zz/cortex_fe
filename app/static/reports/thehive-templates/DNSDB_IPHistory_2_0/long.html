@@ -1,6 +1,6 @@
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}
@@ -9,7 +9,7 @@
 
 <div class="panel panel-info" ng-if="success" ng-init="recordsLimit=20">
     <div class="panel-heading">
-        <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
         <a ng-show="::content.records.length > 20" class="pull-right" href ng-click="recordsLimit=undefined">View All ({{::content.records.length}})</a>
     </div>
     <div class="panel-body">

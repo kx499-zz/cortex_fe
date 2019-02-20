@@ -1,6 +1,6 @@
 <div class="panel panel-info" ng-if="success">
     <div class="panel-heading">
-        Domain Information of  <strong>{{artifact.data }}</strong>
+        Domain Information of  <strong>{{artifact.data | fang}}</strong>
     </div>
     <div class="panel-body">
         <dl class="dl-horizontal">
@@ -23,7 +23,7 @@
             <dd>
                 <span ng-if="content.infos_domain.all_domains.length === 0">-</span>
                 <ul class="list-unstyled">
-                    <li data-ng-repeat="i in content.infos_domain.all_domains">{{i }}</li>
+                    <li data-ng-repeat="i in content.infos_domain.all_domains">{{i | fang}}</li>
                 </ul>
             </dd>
         </dl>
@@ -53,7 +53,7 @@
             <dd>
                 <span ng-if="content.infos_domain.ips.length === 0">-</span>
                 <ul class="list-unstyled">
-                    <li data-ng-repeat="i in content.infos_domain.ips">{{i }}</li>
+                    <li data-ng-repeat="i in content.infos_domain.ips">{{i | fang}}</li>
                 </ul>
             </dd>
         </dl>
@@ -63,7 +63,7 @@
 
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{artifact.data }}</strong>
+        <strong>{{artifact.data | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}

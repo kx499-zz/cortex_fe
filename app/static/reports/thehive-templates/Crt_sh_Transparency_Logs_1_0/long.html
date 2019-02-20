@@ -1,6 +1,6 @@
 <div class="panel panel-info" ng-if="success">
     <div class="panel-heading">
-        crt.sh data of <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        crt.sh data of <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
 		<!-- Domain details -->
@@ -17,14 +17,14 @@
             <dt>Not Before:</dt>
             <dd class="wrap">{{r.not_before}}</dd>
             <dt>Not After:</dt>
-            <dd class="wrap">{{r.not_after}}</dd>
+			<dd class="wrap">{{r.not_after}}</dd>
         </dl>
     </div>
 </div>
 
 <div class="panel panel-danger" ng-if="!success">
     <div class="panel-heading">
-        <strong>{{(artifact.data || artifact.attachment.name) }}</strong>
+        <strong>{{(artifact.data || artifact.attachment.name) | fang}}</strong>
     </div>
     <div class="panel-body">
         {{content.errorMessage}}
