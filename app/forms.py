@@ -27,4 +27,6 @@ class IocForm(Form):
 class FileForm(Form):
     value = FileField('Upload File', validators=[DataRequired()])
     analyzers = SelectMultipleField('Source', validators=[DataRequired()])
-    misp = BooleanField('Misp')
+    message = StringField('Message',
+                          validators = [Optional(), Length(max = 100)],
+                          filters = [lambda x: x or None])

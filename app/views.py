@@ -1,4 +1,4 @@
-from flask import render_template, flash, jsonify, request, abort, Response
+from flask import render_template, flash, jsonify, request, abort, Response, send_file
 from app import app
 from .forms import IocForm, FileForm
 from config import DATA_TYPES, CORTEX, CORTEX_API, VALIDATE
@@ -270,5 +270,23 @@ def query_all():
 @app.route('/detail/<job_id>', methods=['GET', 'POST'])
 def detail(job_id):
     job = _get_job_detail(job_id)
+    pprint.pprint(job)
 
     return jsonify({'data': job})
+
+
+@app.route('/download/<file_hash>')
+def download(file_hash):
+    headers = {'Authorization': 'Bearer %s' % CORTEX_API}
+    try:
+        r = requests.get('%s/api/datastorezip/%s' % (CORTEX, file_hash),
+                         headers=headers,
+                         verify=False,
+                         stream=True)
+    except Exception:
+        print 'hit exception'
+        return Response("Error Downloading")
+
+    return send_file(io.BytesIO(r.content),
+                     attachment_filename='%s.zip' % file_hash,
+                     mimetype='application/zip')
